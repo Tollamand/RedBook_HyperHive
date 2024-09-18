@@ -9,13 +9,7 @@
 </head>
 <body>
 
-<h1>ITS HOME PAGE</h1>
-
-<?php print_r($AllEntity); ?>
-
-<td><a href="item.php?id=3">Подробнее</a></td>
-
-
+<?php print_r($OneEntity); ?>
 
 </body>
 </html>
