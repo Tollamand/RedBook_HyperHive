@@ -1,0 +1,7 @@
+php_flag magic_qoutes_gpc off
+RewriteEngine On
+
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+
+RewriteRule ^(.*)$ ./index.php?route=$1 [L,QSA]
