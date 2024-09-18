@@ -2,7 +2,7 @@
 
 namespace controllers;
 
-use models\User;
+use models\Entity;
 use View\View;
 
 class EntityController
@@ -14,7 +14,7 @@ class EntityController
     public function __construct()
     {
         $this->view = new View(__DIR__ . '/../../../views');
-        $this->users = new User();
+        $this->users = new Entity();
     }
 
     public function getEntities($namePage)
