@@ -2,7 +2,7 @@
 
 namespace controllers;
 
-use models\User;
+use models\Entity;
 use View\View;
 
 class UserController
@@ -14,7 +14,7 @@ class UserController
     public function __construct()
     {
         $this->view = new View(__DIR__ . '/../../templates');
-        $this->users = new User();
+        $this->users = new Entity();
     }
 
     public function getUsers($namePage)
