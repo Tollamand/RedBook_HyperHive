@@ -4,7 +4,7 @@ namespace models;
 
 use services\Connect;
 
-class User {
+class Entity {
 
     // **** Actions with users ****
     public function getAllEntity()
