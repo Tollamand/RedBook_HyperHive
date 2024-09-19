@@ -3,6 +3,7 @@
 namespace router;
 
 use controllers\EntityController;
+use controllers\UserController;
 
 class Router
 {
@@ -38,22 +39,29 @@ class Router
                     switch ($item['namePage'])
                     {
                         case 'home':
-                            $obj = new EntityController();
-                            $obj -> getEntities($item['namePage']);
+                            $entity = new EntityController();
+                            $entity -> getEntities($item['namePage']);
+                            die();
+                        case 'login':
+                            require_once __DIR__ . '/../../views/pages/user/' . $item['namePage'] . '.php';
                             die();
                         case 'item':
-                            $obj = new EntityController();
-                            $obj -> getEntity($item['namePage'], $_GET['id']);
+                            $entity = new EntityController();
+                            $entity -> getEntity($item['namePage'], $_GET['id']);
+                            die();
+                        case 'admin':
+                            $user = new UserController();
+                            $user -> getUsers($item['namePage']);
                             die();
                     }
                 }
-//                elseif ($_SERVER['REQUEST_METHOD'] === "POST")
-//                {
-//                    $method = $item['method'];
-//                    $action = new $item['controller'];
-//                    $action->$method();
-//                    die();
-//                }
+                elseif ($_SERVER['REQUEST_METHOD'] === "POST")
+                {
+                    $method = $item['method'];
+                    $action = new $item['controller'];
+                    $action->$method();
+                    die();
+                }
             }
         }
     }
