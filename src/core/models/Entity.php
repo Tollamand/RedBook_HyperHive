@@ -38,8 +38,9 @@ class Entity {
             $field = explode('=', $onCondition)[0];
             $field = trim($field);
 
+            // Используем LEFT JOIN вместо JOIN, чтобы сохранить строки из основной таблицы
             if ($this->isFieldNotNull($field)) {
-                $joins .= " JOIN $table ON $onCondition";
+                $joins .= " LEFT JOIN $table ON $onCondition";
             }
         }
         return $baseQuery . $joins;
@@ -73,14 +74,32 @@ class Entity {
         Connect::Connect()->query("DELETE FROM `users` WHERE `users`.`id`='$id'");
     }
 
-    public function addEntity($class_ru_id, $class_lat_id, $squad_ru_id, $squad_lat_id, $family_ru_id, $family_lat_id, $species_ru_id, $species_lat_id, $department_ru_id, $department_lat_id, $procedure_ru_id, $procedure_lat_id, $rarity_status_id, $park_id, $population, $habitat_features, $limiting_factors, $security_measures_taken, $species_state_changes, $species_conservation_measures)
+    public function addEntity($class_ru_id, $class_lat_id, $species_ru_id, $species_lat_id, $rarity_status_id, $population)
     {
-        Connect::Connect()->query("INSERT INTO `entity`(`id`, `class_ru_id`, `class_lat_id`, `squad_ru_id`, `squad_lat_id`, `family_ru_id`, `family_lat_id`, `species_ru_id`, `species_lat_id`, `department_ru_id`, `department_lat_id`, `procedure_ru_id`, `procedure_lat_id`, `rarity_status_id`, `park_id`, `population`, `habitat_features`, `limiting_factors`, `security_measures_taken`, `species_state_changes`, `species_conservation_measures`) VALUES ('$class_ru_id', '$class_lat_id', '$squad_ru_id', '$squad_lat_id', '$family_ru_id', '$family_lat_id', '$species_ru_id', '$species_lat_id', '$department_ru_id', '$department_lat_id', '$procedure_ru_id', '$procedure_lat_id', '$rarity_status_id', '$park_id', '$population', '$habitat_features', '$limiting_factors', '$security_measures_taken', '$species_state_changes', '$species_conservation_measures')");
+        $status_id = mysqli_fetch_assoc(Connect::Connect()->query("SELECT * FROM `rarity_status` WHERE status = '$rarity_status_id'"))['id'];
+        $class_lat = $this->queryTable("class_lat", "class_lat", $class_lat_id);
+        $class_ru = $this->queryTable("class_ru", "class_ru", $class_ru_id);
+        $species_ru = $this->queryTable("species_ru", "species_ru", $species_ru_id);
+        $species_lat = $this->queryTable("species_lat", "species_lat", $species_lat_id);
+        Connect::Connect()->query("INSERT INTO `entity`(`class_ru_id`, `class_lat_id`, `species_ru_id`, `species_lat_id`, `rarity_status_id`, `population`) VALUES ('$class_ru', '$class_lat', '$species_ru', '$species_lat', '$status_id', '$population')");
     }
 
-    public function redactEntity($id, $class_ru_id, $class_lat_id, $squad_ru_id, $squad_lat_id, $family_ru_id, $family_lat_id, $species_ru_id, $species_lat_id, $department_ru_id, $department_lat_id, $procedure_ru_id, $procedure_lat_id, $rarity_status_id, $park_id, $population, $habitat_features, $limiting_factors, $security_measures_taken, $species_state_changes, $species_conservation_measures)
+    public function redactEntity($id, $class_ru_id, $class_lat_id, $species_ru_id, $species_lat_id, $rarity_status_id, $population)
     {
-        Connect::Connect()->query("UPDATE `entity` SET `class_ru_id`='$class_ru_id',`class_lat_id`='$class_lat_id',`squad_ru_id`='$squad_ru_id', `squad_lat_id`='$squad_lat_id', `family_ru_id`='$family_ru_id', `family_lat_id`='$family_lat_id', `species_ru_id`=$species_ru_id, `species_lat_id`=$species_lat_id, `department_ru_id`='$department_ru_id', `department_lat_id`='$department_lat_id', `procedure_ru_id`=$procedure_ru_id, `procedure_lat_id`='$procedure_lat_id', WHERE `id`='$id'");
+        $status_id = mysqli_fetch_assoc(Connect::Connect()->query("SELECT * FROM `rarity_status` WHERE status = '$rarity_status_id'"))['id'];
+        $class_lat = $this->queryTable("class_lat", "class_lat", $class_lat_id);
+        $class_ru = $this->queryTable("class_ru", "class_ru", $class_ru_id);
+        $species_ru = $this->queryTable("species_ru", "species_ru", $species_ru_id);
+        $species_lat = $this->queryTable("species_lat", "species_lat", $species_lat_id);
+        Connect::Connect()->query("UPDATE `entity` SET `class_ru_id`='$class_ru',`class_lat_id`='$class_lat', `species_ru_id`=$species_ru, `species_lat_id`=$species_lat, `rarity_status_id`=$status_id, `population`=$population WHERE `id`='$id'");
+    }
+
+    public function queryTable($table_name, $column_name,$value) {
+        if (Connect::Connect()->query("INSERT INTO $table_name ($column_name) VALUES ('$value')")) {
+            return mysqli_fetch_assoc(Connect::Connect()->query("SELECT id FROM `$table_name` WHERE $column_name = '$value'"))['id'];
+        } else {
+            return null;
+        }
     }
 
 }

@@ -56,6 +56,8 @@
     <?php endforeach; ?>
 </table>
 
+
+
 <form action="/addUser" method="post">
     <input type="text" name="name" placeholder="имя">
     <input type="text" name="middle_name" placeholder="отчество">
