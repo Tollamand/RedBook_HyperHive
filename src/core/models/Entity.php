@@ -73,15 +73,14 @@ class Entity {
         Connect::Connect()->query("DELETE FROM `users` WHERE `users`.`id`='$id'");
     }
 
-    public function addUsers($class_ru_id, $class_lat_id, $squad_ru_id, $squad_lat_id, $family_ru_id, $family_lat_id, $species_ru_id, $species_lat_id, $department_ru_id, $department_lat_id, $procedure_ru_id, $procedure_lat_id, $rarity_status_id, $park_id, $population, $habitat_features, $limiting_factors, $security_measures_taken, $species_state_changes, $species_conservation_measures)
+    public function addEntity($class_ru_id, $class_lat_id, $squad_ru_id, $squad_lat_id, $family_ru_id, $family_lat_id, $species_ru_id, $species_lat_id, $department_ru_id, $department_lat_id, $procedure_ru_id, $procedure_lat_id, $rarity_status_id, $park_id, $population, $habitat_features, $limiting_factors, $security_measures_taken, $species_state_changes, $species_conservation_measures)
     {
         Connect::Connect()->query("INSERT INTO `entity`(`id`, `class_ru_id`, `class_lat_id`, `squad_ru_id`, `squad_lat_id`, `family_ru_id`, `family_lat_id`, `species_ru_id`, `species_lat_id`, `department_ru_id`, `department_lat_id`, `procedure_ru_id`, `procedure_lat_id`, `rarity_status_id`, `park_id`, `population`, `habitat_features`, `limiting_factors`, `security_measures_taken`, `species_state_changes`, `species_conservation_measures`) VALUES ('$class_ru_id', '$class_lat_id', '$squad_ru_id', '$squad_lat_id', '$family_ru_id', '$family_lat_id', '$species_ru_id', '$species_lat_id', '$department_ru_id', '$department_lat_id', '$procedure_ru_id', '$procedure_lat_id', '$rarity_status_id', '$park_id', '$population', '$habitat_features', '$limiting_factors', '$security_measures_taken', '$species_state_changes', '$species_conservation_measures')");
     }
 
-
-    public function redactUser($id, $email, $password, $avatar)
+    public function redactEntity($id, $class_ru_id, $class_lat_id, $squad_ru_id, $squad_lat_id, $family_ru_id, $family_lat_id, $species_ru_id, $species_lat_id, $department_ru_id, $department_lat_id, $procedure_ru_id, $procedure_lat_id, $rarity_status_id, $park_id, $population, $habitat_features, $limiting_factors, $security_measures_taken, $species_state_changes, $species_conservation_measures)
     {
-        Connect::Connect()->query("UPDATE `users` SET `email`='$email',`password`='$password',`image`='$avatar' WHERE `id`='$id'") ? true : false;
+        Connect::Connect()->query("UPDATE `entity` SET `class_ru_id`='$class_ru_id',`class_lat_id`='$class_lat_id',`squad_ru_id`='$squad_ru_id', `squad_lat_id`='$squad_lat_id', `family_ru_id`='$family_ru_id', `family_lat_id`='$family_lat_id', `species_ru_id`=$species_ru_id, `species_lat_id`=$species_lat_id, `department_ru_id`='$department_ru_id', `department_lat_id`='$department_lat_id', `procedure_ru_id`=$procedure_ru_id, `procedure_lat_id`='$procedure_lat_id', WHERE `id`='$id'");
     }
 
 }
