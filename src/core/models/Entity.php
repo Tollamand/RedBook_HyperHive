@@ -6,27 +6,59 @@ use services\Connect;
 
 class Entity {
 
-    // **** Actions with users ****
+    private $tables = [
+        'class_ru' => 'entity.class_ru_id = class_ru.id',
+        'class_lat' => 'entity.class_lat_id = class_lat.id',
+        'department_lat' => 'entity.department_lat_id = department_lat.id',
+        'department_ru' => 'entity.department_ru_id = department_ru.id',
+        'family_lat' => 'entity.family_lat_id = family_lat.id',
+        'family_ru' => 'entity.family_ru_id = family_ru.id',
+        'species_lat' => 'entity.species_lat_id = species_lat.id',
+        'species_ru' => 'entity.species_ru_id = species_ru.id',
+        'procedures_lat' => 'entity.procedure_lat_id = procedures_lat.id',
+        'procedures_ru' => 'entity.procedure_ru_id = procedures_ru.id',
+        'rarity_status' => 'entity.rarity_status_id = rarity_status.id',
+        'park' => 'entity.park_id = park.id',
+    ];
+
+    private function buildQuery()
+    {
+        $baseQuery = "SELECT *";
+        $joins = " FROM `entity` ";
+        foreach ($this->tables as $table => $onCondition) {
+            $joins .= " JOIN $table ON $onCondition";
+        }
+        return $baseQuery . $joins;
+    }
+
+    // **** Actions with entity ****
     public function getAllEntity()
     {
-        $query = Connect::Connect()->query("SELECT * FROM `entity`");
-        return mysqli_fetch_all($query);
+        $query = $this->buildQuery();
+        $result = Connect::Connect()->query($query);
+        $data = [];
+        while ($row = mysqli_fetch_assoc($result)) {
+            $data[] = $row;
+        }
+        return $data;
     }
 
     public function getOneEntity($id)
     {
-        $query = Connect::Connect()->query("SELECT * FROM `entity` where id = '$id'");
-        return mysqli_fetch_assoc($query);
+        $query = $this->buildQuery() . " WHERE entity.id = $id";
+        $result = Connect::Connect()->query($query);
+        if ($result && $result->num_rows > 0) {
+            return $result->fetch_assoc();
+        } else {
+            return null;
+        }
     }
 
-//    public function getOneUser($id)
-//    {
-//        $query = Connect::Connect()->query("SELECT * FROM `users` where id = '$id'");
-//        if(!$query){
-//            throw new \Exception();
-//        }
-//        return mysqli_fetch_assoc($query);
-//    }
+    public function deleteEntity($id)
+    {
+        Connect::Connect()->query("DELETE FROM `users` WHERE `users`.`id`='$id'");
+    }
+
 //    public function deleteUser($id, $path)
 //    {
 //        Connect::Connect()->query("DELETE FROM `users` WHERE `users`.`id`='$id'");

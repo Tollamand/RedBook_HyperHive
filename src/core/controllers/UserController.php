@@ -3,24 +3,33 @@
 namespace controllers;
 
 use models\Entity;
+use models\User;
 use View\View;
 
 class UserController
 {
 
     public $view;
-    public $users;
+    public $user;
 
     public function __construct()
     {
-        $this->view = new View(__DIR__ . '/../../templates');
-        $this->users = new Entity();
+        $this->view = new View(__DIR__ . '/../../../views');
+        $this->user = new User();
+    }
+
+    // **** Actions with the session ****
+    public function auth()
+    {
+        $phone = $_POST['phone'];
+        $this->user->loginUser($phone);
+        header('location: /');
     }
 
     public function getUsers($namePage)
     {
         try {
-            return $this->view->render("pages/$namePage.php", ['AllUsers' => $this->users->getAllUsers()]);
+            return $this->view->render("pages/admin/$namePage.php", ['AllUsers' => $this->user->getAllUsers()]);
         } catch (\Exception $e) {
             return $this->view->render("errors/error.php", ['error' => 'Не удалось получить список пользователей.']);
         }
@@ -37,70 +46,42 @@ class UserController
 
 
     // **** Actions with users ****
-//    public function add()
-//    {
-//        $email = $_POST['email'];
-//        $password = $_POST['password'];
-//        $avatar = $_FILES['image'];
-//        $this->users->addUsers($email, $password, $avatar);
-//        header('location: /admin');
-//    }
-//    public function delete()
-//    {
-//        $id = $_POST['id'];
-//        $avatar = $_POST['image'];
-//        $this->users->deleteUser($id, $avatar);
-//        header('location: /admin');
-//    }
-//    public function redact()
-//    {
-//        $id = $_POST['id'];
-//        $email = $_POST['email'];
-//        $password = $_POST['password'];
-//        $avatar = $_POST['image'];
-//        $this->users->redactUser($id, $email, $password, $avatar);
-//        header ('location: /admin');
-//    }
+    public function deleteUser()
+    {
+        $id = $_POST['id'];
+        $this->user->deleteUser($id);
+        header('location: /admin');
+    }
 
+    public function addUser()
+    {
+        $name = $_POST['name'];
+        $middle_name = $_POST['middle_name'];
+        $surname = $_POST['surname'];
+        $phone = $_POST['phone'];
+        $email = $_POST['email'];
+        $role = $_POST['role'];
+        $this->user->addUsers($name, $middle_name, $surname, $phone, $email, $role);
+        header('location: /admin');
+    }
 
-//    **** Actions with images ****
-//    public function deleteImage()
-//    {
-//        $id = $_POST['id'];
-//        $avatar = $_POST['image'];
-//        $this->users->DeleteAvatar($id, $avatar);
-//        header('location: /admin');
-//    }
-//    public function updateImage()
-//    {
-//        $id = $_POST['id'];
-//        $avatar = $_FILES['image'];
-//        $avatar_current = $_POST['image_current'];
-//        $this->users->UpdateAvatar($id, $avatar, $avatar_current);
-//        header('location: /admin');
-//    }
+    public function updateUser()
+    {
+        $id = $_POST['id'];
+        $name = $_POST['name'];
+        $middle_name = $_POST['middle_name'];
+        $surname = $_POST['surname'];
+        $phone = $_POST['phone'];
+        $email = $_POST['email'];
+        $role = $_POST['role'];
+        $this->user->redactUser($id, $name, $middle_name, $surname, $phone, $email, $role);
+        header ('location: /admin');
+    }
 
-
-//    // **** Actions with the session ****
-//    public function auth()
-//    {
-//        $email = $_POST['email'];
-//        $password = $_POST['password'];
-//        $this->users->loginUser($email, $password);
-//        header('location: /');
-//    }
-//    public function reg()
-//    {
-//        $email = $_POST['email'];
-//        $password = $_POST['password'];
-//        $confirm_password = $_POST['confirm_password'];
-//        $this->users->registerUser($email, $password, $confirm_password);
-//        header('location: /');
-//    }
-//    public function logout()
-//    {
-//        unset($_SESSION['user']);
-//        header('location: /');
-//    }
+    public function logout()
+    {
+        unset($_SESSION['user']);
+        header('location: /');
+    }
 
 }
