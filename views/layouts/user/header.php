@@ -5,6 +5,9 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <link rel="stylesheet" href="src/inc.css">
+    <link rel="stylesheet" href="public/css/styles.css">
+    <link rel="stylesheet" href="views/layouts/user/css/custom.css">
+    <title>Red Book</title>
 </head>
 <body>
