@@ -19,14 +19,28 @@ class Entity {
         'procedures_ru' => 'entity.procedure_ru_id = procedures_ru.id',
         'rarity_status' => 'entity.rarity_status_id = rarity_status.id',
         'park' => 'entity.park_id = park.id',
+        'squad_lat' => 'entity.squad_lat_id = squad_lat.id',
+        'squad_ru' => 'entity.squad_ru_id = squad_ru.id',
     ];
+
+    private function isFieldNotNull($field)
+    {
+        $result = Connect::Connect()->query("SELECT $field FROM `entity` WHERE $field IS NOT NULL LIMIT 1");
+        return $result && $result->num_rows > 0;
+    }
 
     private function buildQuery()
     {
         $baseQuery = "SELECT *";
         $joins = " FROM `entity` ";
+
         foreach ($this->tables as $table => $onCondition) {
-            $joins .= " JOIN $table ON $onCondition";
+            $field = explode('=', $onCondition)[0];
+            $field = trim($field);
+
+            if ($this->isFieldNotNull($field)) {
+                $joins .= " JOIN $table ON $onCondition";
+            }
         }
         return $baseQuery . $joins;
     }
@@ -59,61 +73,15 @@ class Entity {
         Connect::Connect()->query("DELETE FROM `users` WHERE `users`.`id`='$id'");
     }
 
-//    public function deleteUser($id, $path)
-//    {
-//        Connect::Connect()->query("DELETE FROM `users` WHERE `users`.`id`='$id'");
-//    }
-//    public function addUsers($email, $password, $avatar)
-//    {
-//        Connect::Connect()->query("INSERT INTO `users`(`id`, `email`, `password`, `image`) VALUES (NULL,'$email','$password','$path')");
-//    }
-//    public function redactUser($id, $email, $password, $avatar)
-//    {
-//        Connect::Connect()->query("UPDATE `users` SET `email`='$email',`password`='$password',`image`='$avatar' WHERE `id`='$id'") ? true : false;
-//    }
-//
-//    // **** Actions with the session ****
-//    public function loginUser($email, $password)
-//    {
-//        if ($email == null || $password == null)
-//        {
-//            die("Поля пустые");
-//        }
-//        $user = mysqli_fetch_assoc(Connect::Connect()->query("SELECT * FROM `users` WHERE email = '$email'"));
-//        if(!$user){
-//            die("Пользователь $email не найден");
-//        }
-////        if($user['email'] == $email && $user['password'] == $password)
-//        if(password_verify($password, $user['password']))
-//        {
-//            $_SESSION["user"] = [
-//                'id' => $user['id'],
-//                'email' => $user['email'],
-//                'password' => $user['password'],
-//                'role' => $user['role']
-//            ];
-//        } else {
-//            die("Неверный логин или пароль");
-//        }
-//    }
-//    public function registerUser($email, $password, $confirm_password)
-//    {
-//        if ($password!==$confirm_password){
-//            die("Пароли не совпали");
-//        } elseif ($email==null || $password==null){
-//            die("Поля пустые");
-//        }
-//        $mbUser = mysqli_fetch_assoc(Connect::Connect()->query("SELECT * FROM `users` WHERE `users` . `email`='$email'"));
-//        if ($mbUser){
-//            die("Такой пользователь уже есть");
-//        } else {
-//            $pass = password_hash($password, PASSWORD_DEFAULT);
-//            $query = Connect::Connect()->query("INSERT INTO `users`(`id`,`email`,`password`) VALUES (NULL,'$email','$pass')");
-//            if (!$query)
-//            {
-//                die ('Ошибка регистрации');
-//            }
-//        }
-//    }
+    public function addUsers($class_ru_id, $class_lat_id, $squad_ru_id, $squad_lat_id, $family_ru_id, $family_lat_id, $species_ru_id, $species_lat_id, $department_ru_id, $department_lat_id, $procedure_ru_id, $procedure_lat_id, $rarity_status_id, $park_id, $population, $habitat_features, $limiting_factors, $security_measures_taken, $species_state_changes, $species_conservation_measures)
+    {
+        Connect::Connect()->query("INSERT INTO `entity`(`id`, `class_ru_id`, `class_lat_id`, `squad_ru_id`, `squad_lat_id`, `family_ru_id`, `family_lat_id`, `species_ru_id`, `species_lat_id`, `department_ru_id`, `department_lat_id`, `procedure_ru_id`, `procedure_lat_id`, `rarity_status_id`, `park_id`, `population`, `habitat_features`, `limiting_factors`, `security_measures_taken`, `species_state_changes`, `species_conservation_measures`) VALUES ('$class_ru_id', '$class_lat_id', '$squad_ru_id', '$squad_lat_id', '$family_ru_id', '$family_lat_id', '$species_ru_id', '$species_lat_id', '$department_ru_id', '$department_lat_id', '$procedure_ru_id', '$procedure_lat_id', '$rarity_status_id', '$park_id', '$population', '$habitat_features', '$limiting_factors', '$security_measures_taken', '$species_state_changes', '$species_conservation_measures')");
+    }
+
+
+    public function redactUser($id, $email, $password, $avatar)
+    {
+        Connect::Connect()->query("UPDATE `users` SET `email`='$email',`password`='$password',`image`='$avatar' WHERE `id`='$id'") ? true : false;
+    }
 
 }
